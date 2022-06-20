@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 class RichTrexFormat {
   static TextSpan decode(String text, [TextStyle? style]) {
     // Split text between Tagged Text and Plain Text.
-    List<String> textlist = text.split(RegExp(
-        r'(?=<(style|widget)=.*?</(style|widget)>)|(?<=<(style|widget)=.*?</(style|widget)>)'));
+    List<String> textlist = text
+        .split(RegExp(r'(?=<style=)|(?<=<\/style>)|(?=<widget=)|(?<=;"\/>)'));
 
     // Clean Text from Tag.
     String newText(String text) {
       try {
         return text.replaceAll(
-            RegExp(r'(<(style|widget)=".*?">)|(</(style|widget)>)'), "");
+            RegExp(r'<style=".*?">|<\/style>|<widget=.*?;"\/>'), "");
       } catch (e) {
         return text;
       }
@@ -154,13 +154,66 @@ class RichTrexFormat {
       }
     }
 
+    // Get Text-Align from Tag.
+    TextAlign? align(String text) {
+      try {
+        RegExp regex = RegExp(r'(?<=align:).*?(?=;)');
+        String value = regex.stringMatch(text)!;
+        return TextAlign.values[int.parse(value)];
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Default TextStyle if [style] is null.
+    TextStyle textStyle = style ?? const TextStyle(color: Colors.black);
+
+    Image? image(String text) {
+      try {
+        String url = RegExp(r'(?<=image-url:).*?(?=;)').stringMatch(text)!;
+        String? height =
+            RegExp(r'(?<=image-height:).*?(?=;)').stringMatch(text);
+        String? width = RegExp(r'(?<=image-width:).*?(?=;)').stringMatch(text);
+        return Image.network(url,
+            height: height != null ? double.parse(height) : null,
+            width: width != null ? double.parse(width) : null);
+      } catch (e) {
+        return null;
+      }
+    }
+
     // Styled TextSpan from Tag.
     return TextSpan(
         children: List.generate(textlist.length, (x) {
-      return TextSpan(
-          text: newText(textlist[x]),
-          style: (style ?? const TextStyle(color: Colors.black, fontSize: 14.0))
-              .copyWith(
+      if (textlist[x].contains(RegExp(r'<style=.*?\/style>'))) {
+        if (textlist[x].contains(RegExp(r'align:.;'))) {
+          return WidgetSpan(
+              child: ConstrainedBox(
+                  constraints: const BoxConstraints(minWidth: double.infinity),
+                  child: Text.rich(
+                      TextSpan(
+                          text: newText(textlist[x]),
+                          style: textStyle.copyWith(
+                              leadingDistribution: TextLeadingDistribution.even,
+                              color: color(textlist[x]),
+                              fontStyle: italic(textlist[x]),
+                              height: fontHeight(textlist[x]),
+                              fontSize: fontSize(textlist[x]),
+                              shadows: [shadow(textlist[x])],
+                              fontWeight: fontWeight(textlist[x]),
+                              fontFamily: fontFamily(textlist[x]),
+                              letterSpacing: fontSpace(textlist[x]),
+                              backgroundColor: backgroundColor(textlist[x]),
+                              decoration: TextDecoration.combine([
+                                overline(textlist[x]),
+                                underline(textlist[x]),
+                                strikeThrough(textlist[x])
+                              ]))),
+                      textAlign: align(textlist[x]))));
+        } else {
+          return TextSpan(
+              text: newText(textlist[x]),
+              style: textStyle.copyWith(
                   leadingDistribution: TextLeadingDistribution.even,
                   color: color(textlist[x]),
                   fontStyle: italic(textlist[x]),
@@ -176,6 +229,12 @@ class RichTrexFormat {
                     underline(textlist[x]),
                     strikeThrough(textlist[x])
                   ])));
+        }
+      } else if (textlist[x].contains(RegExp(r'<widget=.*?;"\/>'))) {
+        return WidgetSpan(child: image(text) ?? const SizedBox());
+      } else {
+        return TextSpan(text: textlist[x]);
+      }
     }));
   }
 }

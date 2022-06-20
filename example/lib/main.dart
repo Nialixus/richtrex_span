@@ -13,45 +13,40 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  var controller = TextEditingController(
-      text:
-          'lorem <style="font-weight:8;">ipsum</style> dolor <style="font-color:0xFFFF1212;">sit</style> amet');
-  late String text = controller.text;
-  @override
-  void initState() {
-    controller.addListener(() => setState(() => text = controller.text));
-    super.initState();
-  }
+  String text =
+      '<widget="image-url:https://edinburghuniform.org/wp-content/uploads/2019/11/twitter-logo-png-twitter-logo-vector-png-clipart-library-518.png;"/>';
+  //'lorem <style="align:2;">Align</style> <style="font-weight:8;font-size:10;">ipsum</style> dolor <style="font-color:0xFFFF1212;decoration:italic;">sit</style> amet';
+  late TextEditingController controller = TextEditingController()
+    ..value = TextEditingValue(
+        text: text, selection: TextSelection.collapsed(offset: text.length));
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Expanded(
-                child: CustomForm(
-                    icon: Icons.text_fields,
-                    title: "String Source",
-                    child: TextField(
-                        autofocus: true,
-                        controller: controller,
-                        maxLines: null,
-                        decoration: const InputDecoration(
-                            isDense: true, border: InputBorder.none)))),
-            Expanded(
-                child: CustomForm(
-                    child: Scrollbar(
-                      child: SingleChildScrollView(
-                          child: Text.rich(RichTrexFormat.decode(text))),
-                    ),
-                    title: "Text Span Result",
-                    icon: Icons.style))
-          ],
-        ),
-      ),
-    );
+        body: SafeArea(
+            child: Column(mainAxisSize: MainAxisSize.max, children: [
+      Expanded(
+          child: CustomForm(
+              icon: Icons.text_fields,
+              title: "String Input",
+              child: TextField(
+                  autofocus: true,
+                  controller: controller,
+                  onChanged: (text) => setState(() => this.text = text),
+                  maxLines: null,
+                  decoration: const InputDecoration(
+                      isDense: true, border: InputBorder.none)))),
+      Expanded(
+          child: CustomForm(
+              icon: Icons.style,
+              title: "Text Span Output",
+              child: Scrollbar(
+                  child: SingleChildScrollView(
+                      child: Text.rich(RichTrexFormat.decode(
+                          text,
+                          const TextStyle(
+                              color: Colors.black, fontSize: 16.0)))))))
+    ])));
   }
 }
 
@@ -65,28 +60,24 @@ class CustomForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color color = Colors.blue.shade800;
     return Container(
-        margin: const EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(width: 1, color: color.withOpacity(0.5))),
-        child: Column(children: [
-          Container(
-              height: 45.0,
-              decoration: BoxDecoration(color: color),
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Row(children: [
-                Icon(icon, color: Colors.white),
-                const SizedBox(width: 8.0),
-                Text(title,
-                    style: const TextStyle(
-                        fontSize: 14.0,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold))
-              ])),
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+        decoration: const BoxDecoration(color: Colors.white),
+        child:
+            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text(title,
+                  style: const TextStyle(fontWeight: FontWeight.bold))),
           Expanded(
-              child: Padding(padding: const EdgeInsets.all(8.0), child: child))
+              child: Container(
+                  margin: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.025),
+                      border: Border.all(
+                          width: 1, color: Colors.black.withOpacity(0.1))),
+                  child: child))
         ]));
   }
 }
