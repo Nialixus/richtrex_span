@@ -1,18 +1,23 @@
 library richtrex_format;
 
 import 'package:flutter/material.dart';
+import 'package:richtrex_image/richtrex_image.dart';
+import 'package:url_launcher/link.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RichTrexFormat {
   static TextSpan decode(String text, [TextStyle? style]) {
     // Split text between Tagged Text and Plain Text.
-    List<String> textlist = text
-        .split(RegExp(r'(?=<style=)|(?<=<\/style>)|(?=<widget=)|(?<=;"\/>)'));
+    List<String> textlist = text.split(RegExp(
+        r'(?=<style=)|(?<=<\/style>)|(?=<widget=)|(?<=;"\/>)|(?<=<\/widget>)'));
 
     // Clean Text from Tag.
     String newText(String text) {
       try {
         return text.replaceAll(
-            RegExp(r'<style=".*?">|<\/style>|<widget=.*?;"\/>'), "");
+            RegExp(
+                r'<style=".*?">|<\/style>|<widget=.*?;"\/>|(<widget=".*?;">)|(<\/widget>)'),
+            "");
       } catch (e) {
         return text;
       }
@@ -155,9 +160,9 @@ class RichTrexFormat {
     }
 
     // Get Text-Align from Tag.
-    TextAlign? align(String text) {
+    TextAlign? textAlign(String text) {
       try {
-        RegExp regex = RegExp(r'(?<=align:).*?(?=;)');
+        RegExp regex = RegExp(r'(?<=text-align:).*?(?=;)');
         String value = regex.stringMatch(text)!;
         return TextAlign.values[int.parse(value)];
       } catch (e) {
@@ -165,75 +170,128 @@ class RichTrexFormat {
       }
     }
 
-    // Default TextStyle if [style] is null.
-    TextStyle textStyle = style ?? const TextStyle(color: Colors.black);
-
-    Image? image(String text) {
+    // Get Image from Tag.
+    RichTrexImage? image(String text) {
       try {
-        String url = RegExp(r'(?<=image-url:).*?(?=;)').stringMatch(text)!;
-        String? height =
-            RegExp(r'(?<=image-height:).*?(?=;)').stringMatch(text);
-        String? width = RegExp(r'(?<=image-width:).*?(?=;)').stringMatch(text);
-        return Image.network(url,
-            height: height != null ? double.parse(height) : null,
-            width: width != null ? double.parse(width) : null);
+        String? network =
+            RegExp(r'(?<=image-network:).*?(?=;)').stringMatch(text);
+        String? memory =
+            RegExp(r'(?<=image-memory:).*?(?=;)').stringMatch(text);
+        String? file = RegExp(r'(?<=image-file:).*?(?=;)').stringMatch(text);
+        String? asset = RegExp(r'(?<=image-asset:).*?(?=;)').stringMatch(text);
+        String? resize =
+            RegExp(r'(?<=image-resize:).*?(?=;)').stringMatch(text);
+        String height =
+            RegExp(r'(?<=image-height:).*?(?=;)').stringMatch(text)!;
+        String width = RegExp(r'(?<=image-width:).*?(?=;)').stringMatch(text)!;
+
+        // Parsed [size] from [width] and [height].
+        Size size = Size(double.parse(width), double.parse(height));
+
+        // Check whether user allowed to resize or not.
+        bool allowed = resize == null ? true : resize == "true";
+
+        if (network != null) {
+          return RichTrexImage.network(network, size: size, resize: allowed);
+        } else if (memory != null) {
+          return RichTrexImage.memory(memory, size: size, resize: allowed);
+        } else if (file != null) {
+          return RichTrexImage.file(file, size: size, resize: allowed);
+        } else if (asset != null) {
+          return RichTrexImage.asset(asset, size: size, resize: allowed);
+        } else {
+          return null;
+        }
       } catch (e) {
         return null;
       }
     }
 
-    // Styled TextSpan from Tag.
+    Future<bool>? hyperlink(String text) {
+      try {
+        RegExp regex = RegExp(r'(?<=hyperlink:).*?(?=;)');
+        String value = regex.stringMatch(text)!;
+        return launchUrl(Uri.parse(value));
+      } catch (e) {
+        return null;
+      }
+    }
+
+    BoxBorder? blockQuote(String text) {
+      try {
+        bool value = text.contains("decoration:blockquote;");
+        if (value == true) {
+          return const Border(left: BorderSide(width: 4, color: Colors.grey));
+        } else {
+          return null;
+        }
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Generated InlineSpan from Tag.
     return TextSpan(
         children: List.generate(textlist.length, (x) {
+      TextStyle textStyle = (style ?? const TextStyle(color: Colors.black))
+          .copyWith(
+              leadingDistribution: TextLeadingDistribution.even,
+              color: color(textlist[x]),
+              fontStyle: italic(textlist[x]),
+              height: fontHeight(textlist[x]),
+              fontSize: fontSize(textlist[x]),
+              shadows: [shadow(textlist[x])],
+              fontWeight: fontWeight(textlist[x]),
+              fontFamily: fontFamily(textlist[x]),
+              letterSpacing: fontSpace(textlist[x]),
+              backgroundColor: backgroundColor(textlist[x]),
+              decoration: TextDecoration.combine([
+                overline(textlist[x]),
+                underline(textlist[x]),
+                strikeThrough(textlist[x])
+              ]));
+      // Generated [TextSpan].
+      TextSpan textSpan =
+          TextSpan(text: newText(textlist[x]), style: textStyle);
+
+      // Generated [WidgetSpan].
+      WidgetSpan widgetSpan = WidgetSpan(
+          child: Container(
+              decoration: BoxDecoration(border: blockQuote(textlist[x])),
+              constraints: (textAlign(textlist[x]) == null &&
+                      blockQuote(textlist[x]) == null)
+                  ? null
+                  : const BoxConstraints(minWidth: double.infinity),
+              child: Material(
+                  child: InkWell(
+                      onTap: hyperlink(textlist[x]) == null
+                          ? null
+                          : () => hyperlink(textlist[x]),
+                      child: Text.rich(textSpan,
+                          textAlign: textAlign(textlist[x]))))));
+
+      // [TextSpan] with `<style ... ></style>` tag.
       if (textlist[x].contains(RegExp(r'<style=.*?\/style>'))) {
-        if (textlist[x].contains(RegExp(r'align:.;'))) {
-          return WidgetSpan(
-              child: ConstrainedBox(
-                  constraints: const BoxConstraints(minWidth: double.infinity),
-                  child: Text.rich(
-                      TextSpan(
-                          text: newText(textlist[x]),
-                          style: textStyle.copyWith(
-                              leadingDistribution: TextLeadingDistribution.even,
-                              color: color(textlist[x]),
-                              fontStyle: italic(textlist[x]),
-                              height: fontHeight(textlist[x]),
-                              fontSize: fontSize(textlist[x]),
-                              shadows: [shadow(textlist[x])],
-                              fontWeight: fontWeight(textlist[x]),
-                              fontFamily: fontFamily(textlist[x]),
-                              letterSpacing: fontSpace(textlist[x]),
-                              backgroundColor: backgroundColor(textlist[x]),
-                              decoration: TextDecoration.combine([
-                                overline(textlist[x]),
-                                underline(textlist[x]),
-                                strikeThrough(textlist[x])
-                              ]))),
-                      textAlign: align(textlist[x]))));
-        } else {
-          return TextSpan(
-              text: newText(textlist[x]),
-              style: textStyle.copyWith(
-                  leadingDistribution: TextLeadingDistribution.even,
-                  color: color(textlist[x]),
-                  fontStyle: italic(textlist[x]),
-                  height: fontHeight(textlist[x]),
-                  fontSize: fontSize(textlist[x]),
-                  shadows: [shadow(textlist[x])],
-                  fontWeight: fontWeight(textlist[x]),
-                  fontFamily: fontFamily(textlist[x]),
-                  letterSpacing: fontSpace(textlist[x]),
-                  backgroundColor: backgroundColor(textlist[x]),
-                  decoration: TextDecoration.combine([
-                    overline(textlist[x]),
-                    underline(textlist[x]),
-                    strikeThrough(textlist[x])
-                  ])));
+        return textSpan;
+
+        // [WidgetSpan] with `<widget ... ></widget>` tag.
+      } else if (textlist[x]
+          .contains(RegExp(r'(<widget=.*?;"\/>)|(<widget=.*?<\/widget>)'))) {
+        // Available widgets.
+        List<Widget?> child = [image(textlist[x])];
+
+        // Put the last available widget into [WidgetSpan].
+        try {
+          return WidgetSpan(child: child.lastWhere((e) => e != null)!);
+
+          // Just put [widgetSpan].
+        } catch (e) {
+          return widgetSpan;
         }
-      } else if (textlist[x].contains(RegExp(r'<widget=.*?;"\/>'))) {
-        return WidgetSpan(child: image(text) ?? const SizedBox());
+
+        // Default put [textSpan].
       } else {
-        return TextSpan(text: textlist[x]);
+        return textSpan;
       }
     }));
   }

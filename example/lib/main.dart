@@ -14,7 +14,8 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String text =
-      '<widget="image-url:https://edinburghuniform.org/wp-content/uploads/2019/11/twitter-logo-png-twitter-logo-vector-png-clipart-library-518.png;"/>';
+      'The <widget="hyperlink:https://github.com/Nialixus;"> link</widget> is here.';
+  //'<widget="image-network:https://edinburghuniform.org/wp-content/uploads/2019/11/twitter-logo-png-twitter-logo-vector-png-clipart-library-518.png;image-width:100;image-height:100;"/>';
   //'lorem <style="align:2;">Align</style> <style="font-weight:8;font-size:10;">ipsum</style> dolor <style="font-color:0xFFFF1212;decoration:italic;">sit</style> amet';
   late TextEditingController controller = TextEditingController()
     ..value = TextEditingValue(

@@ -1,7 +1,7 @@
 name: richtrex_format
-description: A new Flutter package project.
-version: 0.0.1
-homepage:
+description: An extended package of RichTrex package, which is used as a TextSpan encoder and decoder for Rich Text.
+version: 1.0.0
+homepage: https://github.com/Nialixus/richtrex_format
 
 environment:
   sdk: ">=2.16.2 <3.0.0"
@@ -10,6 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  richtrex_image: ^1.1.0
+  url_launcher: ^6.1.4
 
 dev_dependencies:
   flutter_test:
