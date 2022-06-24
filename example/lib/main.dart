@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:richtrex_format/richtrex_format.dart';
 
 void main() {
-  runApp(const MaterialApp(title: "RichTrex: Format", home: MyApp()));
+  runApp(const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: "RichTrex: Format",
+      home: MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -14,9 +17,26 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String text =
-      'The <widget="hyperlink:https://github.com/Nialixus;"> link</widget> is here.';
-  //'<widget="image-network:https://edinburghuniform.org/wp-content/uploads/2019/11/twitter-logo-png-twitter-logo-vector-png-clipart-library-518.png;image-width:100;image-height:100;"/>';
-  //'lorem <style="align:2;">Align</style> <style="font-weight:8;font-size:10;">ipsum</style> dolor <style="font-color:0xFFFF1212;decoration:italic;">sit</style> amet';
+      """<widget="align-x:0;font-weight:8;font-size:25;">RichTrex: Format</widget>
+
+This is an example of using RichTrexFormat. Key features of this package is :
+1. <style="font-weight:8;">Font Weight.</style>
+2. <style="font-color:0xFF4CAF50;">Font Color.</style>
+3. <style="font-size:20;">Font Size.</style>
+4. <style="font-family:Dancing;">Font Family.</style>
+5. <style="font-space:10;">Font Space.</style>
+6. <style="height:3;">Height.</style>
+7. <style="decoration:italic;">Italic Decoration.</style>
+8. <style="decoration:underline;">Underline Decoration.</style>
+9. <style="decoration:strikethrough;">StrikeThrough Decoration.</style>
+10. <style="decoration:overline;">Overline Decoration.</style>
+<widget="decoration:blockquote;"> 11. BlockQuote Decoration.</widget>
+12. <style="background-color:0xFF4CAF50;">Background Color.</style>
+13. <style="shadow-color:0xFF4CAF50;shadow-blur:10;">Shadow.</style>
+14. Resizable Image. <widget="image-network:https://www.kindpng.com/picc/b/355-3557482_package-icon-png.png;image-width:30;image-height:30;"/>
+<widget="align-x:1;">15. Alignment.</widget>
+16. <widget="hyperlink:https://github.com/Nialixus;">Hyperlink.</widget>
+""";
   late TextEditingController controller = TextEditingController()
     ..value = TextEditingValue(
         text: text, selection: TextSelection.collapsed(offset: text.length));
@@ -30,23 +50,28 @@ class _MyAppState extends State<MyApp> {
           child: CustomForm(
               icon: Icons.text_fields,
               title: "String Input",
-              child: TextField(
-                  autofocus: true,
-                  controller: controller,
-                  onChanged: (text) => setState(() => this.text = text),
-                  maxLines: null,
-                  decoration: const InputDecoration(
-                      isDense: true, border: InputBorder.none)))),
+              child: Scrollbar(
+                child: TextField(
+                    autofocus: true,
+                    controller: controller,
+                    onChanged: (text) => setState(() => this.text = text),
+                    maxLines: null,
+                    style: const TextStyle(
+                        fontSize: 12.0,
+                        height: 1.5,
+                        fontWeight: FontWeight.w400),
+                    decoration: const InputDecoration(
+                        isDense: true, border: InputBorder.none)),
+              ))),
       Expanded(
           child: CustomForm(
               icon: Icons.style,
               title: "Text Span Output",
               child: Scrollbar(
                   child: SingleChildScrollView(
-                      child: Text.rich(RichTrexFormat.decode(
-                          text,
-                          const TextStyle(
-                              color: Colors.black, fontSize: 16.0)))))))
+                      child: Text.rich(RichTrexFormat.decode(text,
+                          style: const TextStyle(
+                              color: Colors.black, height: 1.5)))))))
     ])));
   }
 }
