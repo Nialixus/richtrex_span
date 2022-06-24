@@ -2,6 +2,9 @@
 
 An extended package of `RichTrex` package which is used to encode `TextSpan` into `String`, and decode `String` into `TextSpan`.
 
+## Preview
+![RichTrexFormat Demo](https://user-images.githubusercontent.com/45191605/175512465-5025e618-99c5-4638-99d6-709e5fafb569.png)
+
 ## Primary Format
 
 - Font Color ✅
@@ -17,8 +20,8 @@ An extended package of `RichTrex` package which is used to encode `TextSpan` int
 - Align ✅
 - Ordered List ❌
 - Unordered List ❌
-- Block Quote ❌
-- Link ❌
+- Block Quote ✅
+- Link ✅
 
 ## Secondary Format
 
