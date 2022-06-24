@@ -240,8 +240,8 @@ class RichTrexFormat {
                     onTap: onTap,
                     child: Text.rich(TextSpan(
                         text: span.text,
-                        style: span.style
-                            ?.copyWith(color: Colors.blue.shade700))))));
+                        style: span.style!.copyWith(
+                            color: Colors.blue.shade700, height: 1.0))))));
       } catch (e) {
         return null;
       }
@@ -257,10 +257,10 @@ class RichTrexFormat {
       TextStyle generatedStyle = initialStyle.copyWith(
           leadingDistribution: TextLeadingDistribution.even,
           color: color(textlist[x]),
-          fontStyle: italic(textlist[x]),
           height: height(textlist[x]),
-          fontSize: fontSize(textlist[x]),
           shadows: shadow(textlist[x]),
+          fontStyle: italic(textlist[x]),
+          fontSize: fontSize(textlist[x]),
           fontWeight: fontWeight(textlist[x]),
           fontFamily: fontFamily(textlist[x]),
           letterSpacing: fontSpace(textlist[x]),
