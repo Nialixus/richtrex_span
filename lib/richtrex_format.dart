@@ -7,6 +7,52 @@ import 'package:richtrex_image/richtrex_image.dart';
 
 /// This tool has two main functions, which are encoding and decoding [TextSpan].
 class RichTrexFormat {
+  static String encode(TextSpan span) {
+    TextStyle? style = span.style;
+
+    List<InlineSpan> children = span.children ?? [];
+
+    String color(TextSpan span) {
+      try {
+        if (span.style?.color != null && span.style?.color != style?.color) {
+          return "color:span.style!.color!.toString()";
+        } else {
+          return "";
+        }
+      } catch (e) {
+        return "";
+      }
+    }
+
+    String textSpan(TextSpan span) {
+      try {
+        return color(span) + span.style.toString();
+      } catch (e) {
+        return span.toPlainText();
+      }
+    }
+
+    String widgetSpan(WidgetSpan span) {
+      try {
+        return "";
+      } catch (e) {
+        return span.toPlainText();
+      }
+    }
+
+    if (children.isNotEmpty) {
+      return children.map((e) {
+        if (e is TextSpan) {
+          return textSpan(e);
+        } else {
+          return widgetSpan(e as WidgetSpan);
+        }
+      }).join("");
+    } else {
+      return span.toPlainText();
+    }
+  }
+
   /// Decode [TextSpan] from String.
   ///
   /// ```dart
@@ -14,7 +60,8 @@ class RichTrexFormat {
   ///   '<style="font-size:75;">Text</style>'
   /// );
   /// ```
-  static TextSpan decode(String text, {TextStyle? style}) {
+  static TextSpan decode(String text,
+      {TextStyle style = const TextStyle(color: Colors.black)}) {
     // Shortcut of find matched text with [RegExp].
     String? regMatch(String text, String pattern) =>
         RegExp(pattern).stringMatch(text);
@@ -108,15 +155,16 @@ class RichTrexFormat {
     // Get Shadow from Tag.
     List<Shadow>? shadow(String text) {
       try {
-        String? x = regMatch(text, r'(?<=shadow-x:).*?(?=;)');
-        String? y = regMatch(text, r'(?<=shadow-y:).*?(?=;)');
+        String? horizontal = regMatch(text, r'(?<=shadow-horizontal:).*?(?=;)');
+        String? vertical = regMatch(text, r'(?<=shadow-vertical:).*?(?=;)');
         String color = regMatch(text, r'(?<=shadow-color:).*?(?=;)')!;
         String blurRadius = regMatch(text, r'(?<=shadow-blur:).*?(?=;)')!;
         return [
           Shadow(
               color: Color(int.parse(color)),
               blurRadius: double.parse(blurRadius),
-              offset: Offset(double.parse(x ?? "0"), double.parse(y ?? "0")))
+              offset: Offset(double.parse(horizontal ?? "0"),
+                  double.parse(vertical ?? "0")))
         ];
       } catch (e) {
         return null;
@@ -181,9 +229,10 @@ class RichTrexFormat {
     // Get Align from Tag.
     AlignmentGeometry? align(String text) {
       try {
-        String x = regMatch(text, r'(?<=align-x:).*?(?=;)')!;
-        String? y = regMatch(text, r'(?<=align-y:).*?(?=;)');
-        return Alignment(double.parse(x), double.parse(y ?? "0"));
+        String? vertical = regMatch(text, r'(?<=align-vertical:).*?(?=;)');
+        String horizontal = regMatch(text, r'(?<=align-horizontal:).*?(?=;)')!;
+        return Alignment(
+            double.parse(horizontal), double.parse(vertical ?? "0"));
       } catch (e) {
         return null;
       }
@@ -249,64 +298,64 @@ class RichTrexFormat {
 
     // Generated [TextSpan] from Tag.
     return TextSpan(
+        style: style,
         children: List.generate(textlist.length, (x) {
-      // Basic style if [style] is null.
-      TextStyle initialStyle = style ?? const TextStyle(color: Colors.black);
+          // Basic style if [style] is null.
 
-      // Generated style when tag exist.
-      TextStyle generatedStyle = initialStyle.copyWith(
-          leadingDistribution: TextLeadingDistribution.even,
-          color: color(textlist[x]),
-          height: height(textlist[x]),
-          shadows: shadow(textlist[x]),
-          fontStyle: italic(textlist[x]),
-          fontSize: fontSize(textlist[x]),
-          fontWeight: fontWeight(textlist[x]),
-          fontFamily: fontFamily(textlist[x]),
-          letterSpacing: fontSpace(textlist[x]),
-          backgroundColor: backgroundColor(textlist[x]),
-          decoration: TextDecoration.combine([
-            overline(textlist[x]),
-            underline(textlist[x]),
-            strikeThrough(textlist[x])
-          ]));
+          // Generated style when tag exist.
+          TextStyle generatedStyle = style.copyWith(
+              leadingDistribution: TextLeadingDistribution.even,
+              color: color(textlist[x]),
+              height: height(textlist[x]),
+              shadows: shadow(textlist[x]),
+              fontStyle: italic(textlist[x]),
+              fontSize: fontSize(textlist[x]),
+              fontWeight: fontWeight(textlist[x]),
+              fontFamily: fontFamily(textlist[x]),
+              letterSpacing: fontSpace(textlist[x]),
+              backgroundColor: backgroundColor(textlist[x]),
+              decoration: TextDecoration.combine([
+                overline(textlist[x]),
+                underline(textlist[x]),
+                strikeThrough(textlist[x])
+              ]));
 
-      // Generated [TextSpan] from <style ... ></style> tag.
-      TextSpan textSpan({TextStyle? style}) =>
-          TextSpan(text: newText(textlist[x]), style: style ?? generatedStyle);
+          // Generated [TextSpan] from <style ... ></style> tag.
+          TextSpan textSpan =
+              TextSpan(text: newText(textlist[x]), style: generatedStyle);
 
-      // Generated [WidgetSpan] from <widget ... ></widget> tag.
-      WidgetSpan widgetSpan({required Widget child}) => WidgetSpan(
-          style: initialStyle,
-          child: Container(
-              alignment: align(textlist[x]),
-              decoration: blockQuote(textlist[x]),
-              constraints: (align(textlist[x]) == null &&
-                      blockQuote(textlist[x]) == null)
-                  ? null
-                  : const BoxConstraints(minWidth: double.infinity),
-              child: child));
+          // Generated [WidgetSpan] from <widget ... ></widget> tag.
+          WidgetSpan widgetSpan({required Widget child}) => WidgetSpan(
+              style: style,
+              child: Container(
+                  alignment: align(textlist[x]),
+                  decoration: blockQuote(textlist[x]),
+                  constraints: (align(textlist[x]) == null &&
+                          blockQuote(textlist[x]) == null)
+                      ? null
+                      : const BoxConstraints(minWidth: double.infinity),
+                  child: child));
 
-      if (textlist[x].contains(RegExp(r'<style=.*?\/style>'))) {
-        // textlist[x] with `<style ... ></style>` tag.
-        return textSpan();
-      } else if (textlist[x]
-          .contains(RegExp(r'<widget=.*?;"\/>|<widget=.*?<\/widget>'))) {
-        // textlist[x] with `<widget ... />` or <widget ... ></widget> tag.
-        List<Widget?> child = [
-          image(textlist[x]),
-          hyperlink(textlist[x], span: textSpan())
-        ];
-        try {
-          return widgetSpan(
-              child: child.lastWhere((element) => element != null)!);
-        } catch (e) {
-          return widgetSpan(child: Text.rich(textSpan()));
-        }
-      } else {
-        // if textlist[x] has no style, just return basic textspan.
-        return TextSpan(text: textlist[x], style: initialStyle);
-      }
-    }));
+          if (textlist[x].contains(RegExp(r'<style=.*?\/style>'))) {
+            // textlist[x] with `<style ... ></style>` tag.
+            return textSpan;
+          } else if (textlist[x]
+              .contains(RegExp(r'<widget=.*?;"\/>|<widget=.*?<\/widget>'))) {
+            // textlist[x] with `<widget ... />` or <widget ... ></widget> tag.
+            List<Widget?> child = [
+              image(textlist[x]),
+              hyperlink(textlist[x], span: textSpan)
+            ];
+            try {
+              return widgetSpan(
+                  child: child.lastWhere((element) => element != null)!);
+            } catch (e) {
+              return widgetSpan(child: Text.rich(textSpan));
+            }
+          } else {
+            // if textlist[x] has no style, just return basic textspan.
+            return TextSpan(text: textlist[x]);
+          }
+        }));
   }
 }
