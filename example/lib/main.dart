@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:richtrex_format/richtrex_format.dart';
 
@@ -26,8 +24,8 @@ This is an example of using RichTrexFormat. Key features of this package is :
 2. <style="font-color:0xFF4CAF50;">Font Color.</style>
 3. <style="font-size:20;">Font Size.</style>
 4. <style="font-family:Dancing;">Font Family.</style>
-5. <style="font-space:10;">Font Space.</style>
-6. <style="height:3;">Height.</style>
+5. <style="horizontal-space:10;">Horizontal Space.</style>
+6. <style="vertical-space:3;">Vertical Space.</style>
 7. <style="decoration:italic;">Italic Decoration.</style>
 8. <style="decoration:underline;">Underline Decoration.</style>
 9. <style="decoration:strikethrough;">StrikeThrough Decoration.</style>
@@ -40,20 +38,15 @@ This is an example of using RichTrexFormat. Key features of this package is :
 16. <widget="hyperlink:https://github.com/Nialixus;">Hyperlink.</widget>
 """;
 
-  String newt = '2. <style="font-color:0xFF4CAF50;">Font Color.</style>';
-
   late TextEditingController controller = TextEditingController()
     ..value = TextEditingValue(
         text: text, selection: TextSelection.collapsed(offset: text.length));
 
   @override
   Widget build(BuildContext context) {
-    var decode = RichTrexFormat.decode(newt,
-        style: const TextStyle(color: Colors.black, height: 1.5));
-    Future.value(decode).then((value) {
-      var a = RichTrexFormat.encode(value);
-      log(a);
-    });
+    var decode = RichTrexFormatDecode(text,
+        textStyle: const TextStyle(color: Colors.black, height: 1.5));
+
     return Scaffold(
         body: SafeArea(
             child: Column(mainAxisSize: MainAxisSize.max, children: [

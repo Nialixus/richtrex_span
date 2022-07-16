@@ -1,21 +1,31 @@
-/// An extended package of `RichTrexPackage`. This package is used to encode [TextSpan] into String, and decode [TextSpan] from String.
+/// An extended package of `RichTrexPackage`. This package is used to decode [TextSpan] from encoded [String].
 library richtrex_format;
 
 import 'package:flutter/material.dart';
 import 'package:url_launcher/link.dart';
 import 'package:richtrex_image/richtrex_image.dart';
 
-/// This tool has two main functions, which are encoding and decoding [TextSpan].
+part 'src/richtrex_format_decode.dart';
+
+/// This is used as a tool to convert encoded [String] into [TextSpan].
 class RichTrexFormat {
+  /*
+  /// Encode [TextSpan] to String.
+  ///
+  /// ```dart
+  /// RichTrexFormat.encode(
+  ///   TextSpan()
+  /// );
+  /// ```
   static String encode(TextSpan span) {
     TextStyle? style = span.style;
 
     List<InlineSpan> children = span.children ?? [];
 
-    String color(TextSpan span) {
+    String color(TextSpan childSpan, TextSpan parentSpan) {
       try {
         if (span.style?.color != null && span.style?.color != style?.color) {
-          return "color:span.style!.color!.toString()";
+          return "";
         } else {
           return "";
         }
@@ -24,11 +34,11 @@ class RichTrexFormat {
       }
     }
 
-    String textSpan(TextSpan span) {
+    String textSpan(TextSpan childSpan, TextSpan parentSpan) {
       try {
-        return color(span) + span.style.toString();
+        return span.toString();
       } catch (e) {
-        return span.toPlainText();
+        return "";
       }
     }
 
@@ -36,14 +46,14 @@ class RichTrexFormat {
       try {
         return "";
       } catch (e) {
-        return span.toPlainText();
+        return "$e";
       }
     }
 
     if (children.isNotEmpty) {
       return children.map((e) {
         if (e is TextSpan) {
-          return textSpan(e);
+          return textSpan(e, e);
         } else {
           return widgetSpan(e as WidgetSpan);
         }
@@ -51,7 +61,7 @@ class RichTrexFormat {
     } else {
       return span.toPlainText();
     }
-  }
+  }*/
 
   /// Decode [TextSpan] from String.
   ///
@@ -112,16 +122,6 @@ class RichTrexFormat {
       }
     }
 
-    // Get Height from Tag.
-    double? height(String text) {
-      try {
-        String value = regMatch(text, r'(?<=height:).*?(?=;)')!;
-        return double.parse(value);
-      } catch (e) {
-        return null;
-      }
-    }
-
     // Get Font-Family from Tag.
     String? fontFamily(String text) {
       try {
@@ -142,10 +142,20 @@ class RichTrexFormat {
       }
     }
 
-    // Get Font-Space from Tag.
-    double? fontSpace(String text) {
+    // Get Horizontal-Space from Tag.
+    double? horizontalSpace(String text) {
       try {
-        String value = regMatch(text, r'(?<=font-space:).*?(?=;)')!;
+        String value = regMatch(text, r'(?<=horizontal-space:).*?(?=;)')!;
+        return double.parse(value);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Get Vertical-Space from Tag.
+    double? verticalSpace(String text) {
+      try {
+        String value = regMatch(text, r'(?<=vertical-space:).*?(?=;)')!;
         return double.parse(value);
       } catch (e) {
         return null;
@@ -306,13 +316,13 @@ class RichTrexFormat {
           TextStyle generatedStyle = style.copyWith(
               leadingDistribution: TextLeadingDistribution.even,
               color: color(textlist[x]),
-              height: height(textlist[x]),
+              height: verticalSpace(textlist[x]),
               shadows: shadow(textlist[x]),
               fontStyle: italic(textlist[x]),
               fontSize: fontSize(textlist[x]),
               fontWeight: fontWeight(textlist[x]),
               fontFamily: fontFamily(textlist[x]),
-              letterSpacing: fontSpace(textlist[x]),
+              letterSpacing: horizontalSpace(textlist[x]),
               backgroundColor: backgroundColor(textlist[x]),
               decoration: TextDecoration.combine([
                 overline(textlist[x]),
