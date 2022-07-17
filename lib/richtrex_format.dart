@@ -1,7 +1,9 @@
 /// An extended package of `RichTrexPackage`. This package is used to decode [TextSpan] from encoded [String].
 library richtrex_format;
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:richtrex_format/src/regex_matcher.dart';
 import 'package:url_launcher/link.dart';
 import 'package:richtrex_image/richtrex_image.dart';
 

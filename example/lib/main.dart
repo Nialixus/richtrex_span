@@ -17,7 +17,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String text =
-      """<widget="align-horizontal:0;font-weight:8;font-size:25;">RichTrex: Format</widget>
+      """<widget="align-horizontal:0;"><style="font-weight:8;font-size:25;">RichTrex:</style> Format</widget>
 
 This is an example of using RichTrexFormat. Key features of this package is :
 1. <style="font-weight:8;">Font Weight.</style>
@@ -36,6 +36,7 @@ This is an example of using RichTrexFormat. Key features of this package is :
 14. Resizable Image. <widget="image-network:https://www.kindpng.com/picc/b/355-3557482_package-icon-png.png;image-width:30;image-height:30;"/>
 <widget="align-horizontal:1;">15. Alignment.</widget>
 16. <widget="hyperlink:https://github.com/Nialixus;">Hyperlink.</widget>
+
 """;
 
   late TextEditingController controller = TextEditingController()
@@ -44,8 +45,8 @@ This is an example of using RichTrexFormat. Key features of this package is :
 
   @override
   Widget build(BuildContext context) {
-    var decode = RichTrexFormatDecode(text,
-        textStyle: const TextStyle(color: Colors.black, height: 1.5));
+    var decode = RichTrexFormatDecode(text);
+    print(decode.textlist);
 
     return Scaffold(
         body: SafeArea(
