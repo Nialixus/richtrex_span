@@ -46,7 +46,7 @@ This is an example of using RichTrexFormat. Key features of this package is :
   @override
   Widget build(BuildContext context) {
     var decode = RichTrexFormatDecode(text);
-    print(decode.textlist);
+    //print(decode.textlist);
 
     return Scaffold(
         body: SafeArea(
