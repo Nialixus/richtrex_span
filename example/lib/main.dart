@@ -17,8 +17,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String text =
-      """<widget="align-horizontal:0;"><style="font-weight:8;font-size:25;">RichTrex:</style> Format</widget>
-
+      """<style="font-weight:8;font-size:25;align-x:0;">RichTrex: Format</style><br>
 This is an example of using RichTrexFormat. Key features of this package is :
 1. <style="font-weight:8;">Font Weight.</style>
 2. <style="font-color:0xFF4CAF50;">Font Color.</style>
@@ -30,12 +29,12 @@ This is an example of using RichTrexFormat. Key features of this package is :
 8. <style="decoration:underline;">Underline Decoration.</style>
 9. <style="decoration:strikethrough;">StrikeThrough Decoration.</style>
 10. <style="decoration:overline;">Overline Decoration.</style>
-<widget="decoration:blockquote;"> 11. BlockQuote Decoration.</widget>
+<style="decoration:blockquote;">11. BlockQuote Decoration.</style>
 12. <style="background-color:0xFF4CAF50;">Background Color.</style>
 13. <style="shadow-color:0xFF4CAF50;shadow-blur:10;">Shadow.</style>
 14. Resizable Image. <widget="image-network:https://www.kindpng.com/picc/b/355-3557482_package-icon-png.png;image-width:30;image-height:30;"/>
-<widget="align-horizontal:1;">15. Alignment.</widget>
-16. <widget="hyperlink:https://github.com/Nialixus;">Hyperlink.</widget>
+<style="align-x:0;align-y:0;">15. Alignment.</style>
+16. <style="hyperlink:https://github.com/Nialixus;">Hyperlink.</style>
 
 """;
 
@@ -45,9 +44,6 @@ This is an example of using RichTrexFormat. Key features of this package is :
 
   @override
   Widget build(BuildContext context) {
-    var decode = RichTrexFormatDecode(text);
-    //print(decode.textlist);
-
     return Scaffold(
         body: SafeArea(
             child: Column(mainAxisSize: MainAxisSize.max, children: [
@@ -72,7 +68,8 @@ This is an example of using RichTrexFormat. Key features of this package is :
               icon: Icons.style,
               title: "Text Span Output",
               child: Scrollbar(
-                  child: SingleChildScrollView(child: Text.rich(decode)))))
+                  child: SingleChildScrollView(
+                      child: Text.rich(RichTrexFormat.decode(text: text))))))
     ])));
   }
 }
