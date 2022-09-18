@@ -178,7 +178,7 @@ packages:
     source: path
     version: "1.0.0"
   richtrex_image:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: richtrex_image
       url: "https://pub.dartlang.org"
