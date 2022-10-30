@@ -7,13 +7,14 @@ import 'package:richtrex_format/src/regex_matcher.dart';
 import 'package:url_launcher/link.dart';
 import 'package:richtrex_image/richtrex_image.dart';
 
-part 'src/richtrex_encoder.dart';
+part 'src/richtrex_span.dart';
 
 /// A tool to decode [TextSpan] from encoded [String].
 class RichTrexFormat extends TextSpan {
-  static String encode(List<RichTrexEncoder> children) {
-    return List.generate(children.length, (x) => children[x].toPlainText())
-        .toString();
+  static String encode(List<RichTrexSpan> children) {
+    return List.generate(children.length, (x) => children[x].encode())
+        .toString()
+        .replaceAll(RegExp(r"\[|\]|,"), "");
   }
 
   /// A tool to decode [TextSpan] from encoded [String].
@@ -65,7 +66,7 @@ class RichTrexFormat extends TextSpan {
   /// String cleaned = string(text);
   /// print(cleaned) // It's a bold text
   /// ```
-  static String string(String text) => text.replaceAll(
+  static String toText(String text) => text.replaceAll(
       RegExp(r'<style=".*?;">|<\/style>|<br>|<widget=".*?;"\/>'), "");
 
   /// Parse [Color] from input [text].
@@ -350,7 +351,7 @@ class RichTrexFormat extends TextSpan {
   /// RichTrexImage? widget = image(text);
   /// ```
   RichTrexImage? image(String text) {
-    if (text.contains(RegExp(r'<widget=".*?/>'))) {
+    if (text.contains(RegExp(r'<widget=".*?"/>'))) {
       try {
         String? file = text.matchWith('(?<=image-file:).*?(?=;)');
         String? width = text.matchWith('(?<=image-width:).*?(?=;)');
@@ -398,10 +399,10 @@ class RichTrexFormat extends TextSpan {
     return List.generate(
         texts.length,
         (x) => image(texts[x]) != null
-            ? RichTrexEncoder.image(image: image(texts[x])!)
-            : RichTrexEncoder(
+            ? RichTrexSpan.image(image: image(texts[x])!)
+            : RichTrexSpan(
                 style: style,
-                text: string(texts[x]),
+                text: toText(texts[x]),
                 align: align(texts[x]),
                 backgroundColor: backgroundColor(texts[x]),
                 blockquote: blockquote(texts[x]),
