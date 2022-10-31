@@ -11,7 +11,9 @@ class EncodeSample extends StatelessWidget {
         fontWeight: FontWeight.bold,
         fontSize: 25,
         align: Alignment.center),
+    RichTrexSpan(newline: true),
     RichTrexSpan(blankSpace: true),
+    RichTrexSpan(newline: true),
     RichTrexSpan(
         text:
             "This is an Example of using RichTrexFormat. Key features of this package is :"),

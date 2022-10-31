@@ -5,26 +5,26 @@ class DecodeSample extends StatefulWidget {
   const DecodeSample({Key? key}) : super(key: key);
 
   static const String text =
-      """<style="font-weight:8;font-size:25;align-x:0;">RichTrex: Format</style>
-<br>
-This is an example of using RichTrexFormat. Key features of this package is :
-1. <style="font-weight:8;">Font Weight.</style>
-2. <style="font-color:0xFF4CAF50;">Font Color.</style>
-3. <style="font-size:20;">Font Size.</style>
-4. <style="font-family:Dancing;">Font Family.</style>
-5. <style="horizontal-space:10;">Horizontal Space.</style>
-6. <style="vertical-space:3;">Vertical Space.</style>
-7. <style="decoration:italic;">Italic Decoration.</style>
-8. <style="decoration:underline;">Underline Decoration.</style>
-9. <style="decoration:strikethrough;">StrikeThrough Decoration.</style>
-10. <style="decoration:overline;">Overline Decoration.</style>
-<style="decoration:blockquote;">11. BlockQuote Decoration.</style>
-12. <style="background-color:0xFF4CAF50;">Background Color.</style>
-13. <style="shadow-color:0xFF4CAF50;shadow-blur:10;">Shadow.</style>
-14. Resizable Image. <widget="image-network:https://www.kindpng.com/picc/b/355-3557482_package-icon-png.png;image-width:30;image-height:30;"/>
-<style="align-x:0;align-y:0;">15. Alignment.</style>
-16. <style="hyperlink:https://github.com/Nialixus;">Hyperlink.</style>
-17. <style="padding-left:10.5;padding-top:10.5;">Padding.</style>""";
+      """<style="font-weight:6;font-size:25.0;align-x:0.0;align-y:0.0;">RichTrex: Format</style>
+      <br>
+This is an Example of using RichTrexFormat. Key features of this package is : 
+<style="font-weight:6;">1. Font Weight</style> 
+<style="font-color:0xFFF44336;">2. Font Color</style> 
+<style="font-size:40.0;">3. Font Size</style> 
+<style="font-family:Dancing;">4. Font Family</style> 
+<style="horizontal-space:5.0;">5. Horizontal Space</style> 
+<style="vertical-space:2.0;">6. Vertical Space</style> 
+<style="decoration:italic;">7. Italic Decoration</style> 
+<style="decoration:underline;">8. Underline Decoration</style> 
+<style="decoration:strikethrough;">9. StrikeThrough Decoration</style> 
+<style="decoration:overline;">10. Overline Decoration</style> 
+<style="decoration:blockquote;">11. BlockQuote Decoration</style> 
+<style="background-color:0xFF2196F3;">12. Background Color</style> 
+<style="shadow-color:0xFFF44336;shadow-blur:10.0;shadow-vertical:-1.0;shadow-horizontal:-1.0;">13. Shadow</style> 
+14. Resizable Image <widget="image-network:https://www.kindpng.com/picc/b/355-3557482_package-icon-png.png;image-width:30.0;image-height:30.0;"/> 
+<style="align-x:0.0;align-y:0.0;">15. Alignment</style> 
+<style="hyperlink:https://github.com/Nialixus;">16. Hyperlink</style> 
+<style="padding-left:20.0;padding-top:20.0;padding-right:20.0;padding-bottom:20.0;">17. Padding</style>""";
 
   @override
   State<DecodeSample> createState() => _DecodeSampleState();
