@@ -1,4 +1,4 @@
-part of 'package:richtrex_format/richtrex_format.dart';
+/*part of 'package:richtrex_format/richtrex_format.dart';
 
 class RichTrexSpan extends WidgetSpan {
   const RichTrexSpan(
@@ -6,7 +6,6 @@ class RichTrexSpan extends WidgetSpan {
       TextStyle? style,
       this.blockquote = false,
       this.padding,
-      this.newline = false,
       this.align,
       this.backgroundColor,
       this.hyperlink,
@@ -20,19 +19,17 @@ class RichTrexSpan extends WidgetSpan {
       this.overline = false,
       this.strikeThrough = false,
       this.underline = false,
-      this.blankSpace = false,
       this.italic = false})
       : image = null,
+        breakline = false,
         super(child: const SizedBox(), style: style ?? const TextStyle());
 
-  const RichTrexSpan.image({required this.image})
+  const RichTrexSpan.breakline([this.breakline = true])
       : blockquote = false,
         padding = null,
         fontFamily = null,
-        newline = false,
         backgroundColor = null,
         align = null,
-        blankSpace = false,
         hyperlink = null,
         text = null,
         italic = false,
@@ -45,6 +42,28 @@ class RichTrexSpan extends WidgetSpan {
         strikeThrough = false,
         overline = false,
         underline = false,
+        image = null,
+        super(child: const SizedBox(), style: const TextStyle());
+
+  const RichTrexSpan.image({required this.image})
+      : blockquote = false,
+        padding = null,
+        fontFamily = null,
+        backgroundColor = null,
+        align = null,
+        hyperlink = null,
+        text = null,
+        italic = false,
+        shadow = null,
+        color = null,
+        fontSize = null,
+        fontWeight = null,
+        verticalSpace = null,
+        horizontalSpace = null,
+        strikeThrough = false,
+        overline = false,
+        underline = false,
+        breakline = false,
         assert(image != null),
         super(child: const SizedBox(), style: const TextStyle());
 
@@ -72,13 +91,14 @@ class RichTrexSpan extends WidgetSpan {
   final bool underline;
   final bool overline;
   final bool italic;
-  final bool newline;
-  final bool blankSpace;
+  final bool breakline;
 
   @override
   Widget get child {
     if (image != null) {
       return image!;
+    } else if (breakline) {
+      return Text("\n\n");
     } else {
       return Container(
           decoration: blockquote == true
@@ -90,13 +110,7 @@ class RichTrexSpan extends WidgetSpan {
           padding: blockquote == true ? const EdgeInsets.all(4.0) : padding,
           constraints: blockquote == true
               ? const BoxConstraints(minWidth: double.infinity)
-              : blankSpace == true
-                  ? const BoxConstraints(
-                      minWidth: double.infinity, minHeight: 20)
-                  : newline == true
-                      ? const BoxConstraints(
-                          minWidth: double.infinity, maxHeight: 0)
-                      : null,
+              : null,
           alignment: align,
           child: Link(
               uri: hyperlink == null ? null : Uri.parse(hyperlink!),
@@ -135,8 +149,12 @@ class RichTrexSpan extends WidgetSpan {
 }
 
 extension _RichTrexDecoder on String {
-  static List<String> toTextlist(String text) => text.split(RegExp(
-      r'(?=<style=")|(?<=<\/style>)|(?=\n)|(?<=\n)|(?=<br>)|(?<=<br>)|(?=<widget)|(?<="\/>)'));
+  static List<String> toTextlist(String text) => text
+      .replaceAll("\n", "<br>")
+      .split(RegExp(
+          r'(?=<style=")|(?<=<\/style>)|(?=<br>)|(?<=<br>)|(?=<widget)|(?<="\/>)'))
+      .where((e) => e != " ")
+      .toList();
 
   static String toText(String text) => text.replaceAll(
       RegExp(r'<style=".*?;">|<\/style>|<br>|<widget=".*?;"\/>'), "");
@@ -270,14 +288,6 @@ extension _RichTrexDecoder on String {
     }
   }
 
-  static bool toNewline(String text) {
-    return text.contains('\n');
-  }
-
-  static bool toBlankSpace(String text) {
-    return text.contains("<br>");
-  }
-
   static AlignmentGeometry? toAlign(String text) {
     try {
       String? x = text.matchWith(r'(?<=align-x:).*?(?=;)');
@@ -295,6 +305,10 @@ extension _RichTrexDecoder on String {
 
   static String? toHyperlink(String text) {
     return text.matchWith(r'(?<=hyperlink:).*?(?=;)');
+  }
+
+  static bool toBreakline(String text) {
+    return text.contains(RegExp("\n|<br>"));
   }
 
   static RichTrexImage? toImage(String text) {
@@ -336,6 +350,8 @@ extension _RichTrexDecoder on String {
 
   TextSpan decode([TextStyle style = const TextStyle(color: Colors.black)]) {
     List<String> texts = toTextlist(this);
+    print(texts);
+
     return TextSpan(
         children: List.generate(
             texts.length,
@@ -354,8 +370,6 @@ extension _RichTrexDecoder on String {
                     horizontalSpace: toHorizontalSpace(texts[x]),
                     hyperlink: toHyperlink(texts[x]),
                     italic: toItalic(texts[x]),
-                    newline: toNewline(texts[x]),
-                    blankSpace: toBlankSpace(texts[x]),
                     overline: toOverline(texts[x]),
                     strikeThrough: toStrikeThrough(texts[x]),
                     underline: toUnderline(texts[x]),
@@ -370,6 +384,14 @@ extension _RichTrexEncoder on RichTrexSpan {
     try {
       return text!;
     } catch (e) {
+      return "";
+    }
+  }
+
+  static String fromBreakline({bool breakline = true}) {
+    if (breakline) {
+      return "<br>";
+    } else {
       return "";
     }
   }
@@ -513,14 +535,6 @@ extension _RichTrexEncoder on RichTrexSpan {
     }
   }
 
-  static String fromBlankSpace({bool blankSpace = false}) {
-    if (blankSpace) {
-      return "<br>";
-    } else {
-      return "";
-    }
-  }
-
   static String fromAlign({AlignmentGeometry? align}) {
     try {
       if (align != null) {
@@ -588,14 +602,6 @@ extension _RichTrexEncoder on RichTrexSpan {
     }
   }
 
-  static String fromNewLine({bool newline = false}) {
-    if (newline) {
-      return "\n";
-    } else {
-      return "";
-    }
-  }
-
   String get encode {
     List<String> styles = [
       fromColor(color: color, blockquote: blockquote, hyperlink: hyperlink),
@@ -619,13 +625,12 @@ extension _RichTrexEncoder on RichTrexSpan {
     if (image != null) {
       return fromImage(image: image);
     } else if (styles.where((e) => e == "").length == styles.length) {
-      return fromText(text: text) +
-          fromNewLine(newline: newline) +
-          fromBlankSpace(blankSpace: blankSpace);
+      return fromText(text: text);
+    } else if (breakline) {
+      return fromBreakline(breakline: breakline);
     } else {
-      return '<style="${styles.toString().replaceAll(" ", "")}">${fromText(text: text)}</style>' +
-          fromNewLine(newline: newline) +
-          fromBlankSpace(blankSpace: blankSpace);
+      return '<style="${styles.toString().replaceAll(" ", "")}">${fromText(text: text)}</style>';
     }
   }
 }
+*/

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:richtrex_format/richtrex_format.dart';
 
 class DecodeSample extends StatefulWidget {
@@ -6,7 +6,7 @@ class DecodeSample extends StatefulWidget {
 
   static const String text =
       """<style="font-weight:6;font-size:25.0;align-x:0.0;align-y:0.0;">RichTrex: Format</style>
-      <br>
+
 This is an Example of using RichTrexFormat. Key features of this package is : 
 <style="font-weight:6;">1. Font Weight</style> 
 <style="font-color:0xFFF44336;">2. Font Color</style> 
@@ -71,3 +71,4 @@ class _DecodeSampleState extends State<DecodeSample> {
     ]);
   }
 }
+*/
