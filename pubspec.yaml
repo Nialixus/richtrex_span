@@ -1,7 +1,7 @@
-name: richtrex_format
+name: richtrex_span
 description: An extended package of RichTrex package, which is used as a tool to decode TextSpan from encoded String, which will be displayed as a form of richtext.
 version: 1.0.0
-homepage: https://github.com/Nialixus/richtrex_format
+homepage: https://github.com/Nialixus/richtrex_span
 
 environment:
   sdk: ">=2.16.2 <3.0.0"
