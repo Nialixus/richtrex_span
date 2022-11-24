@@ -14,7 +14,7 @@ class RichTrexStyle extends RichTrexSpan {
       bool underline = false,
       bool overline = false,
       bool italic = false})
-      : super(const TextSpan(),
+      : super(
             backgroundColor: backgroundColor,
             color: color,
             fontFamily: fontFamily,

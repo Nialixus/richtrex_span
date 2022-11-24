@@ -26,6 +26,7 @@ class Test extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const List<RichTrexSpan> spans = [
+      RichTrexStyle("text"),
       RichTrexStyle("asas", color: Colors.red),
       RichTrexWidget("sasa", align: Alignment.center),
       RichTrexWidget.image(
@@ -33,7 +34,7 @@ class Test extends StatelessWidget {
               "https://w7.pngwing.com/pngs/193/507/png-transparent-black-survival-character-concept-art-design-game-video-game-fictional-character-thumbnail.png",
               size: Size(40, 40)))
     ];
-    log(spans.map((e) => e.encode).toString());
+    log(RichTrexSpan.encode(spans));
     return const Center(child: Text.rich(TextSpan(children: spans)));
   }
 }

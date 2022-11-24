@@ -10,7 +10,7 @@ part 'src/richtrex_widget.dart';
 part 'src/richtrex_style.dart';
 
 class RichTrexSpan extends InlineSpan {
-  const RichTrexSpan(this.child,
+  const RichTrexSpan(
       {this.fontSize,
       this.color,
       this.verticalSpace,
@@ -29,7 +29,7 @@ class RichTrexSpan extends InlineSpan {
       this.underline = false,
       this.overline = false,
       this.italic = false})
-      : assert(child is TextSpan || child is WidgetSpan);
+      : child = const TextSpan();
   final InlineSpan child;
   final double? fontSize;
   final Color? color;
@@ -264,44 +264,49 @@ class RichTrexSpan extends InlineSpan {
       }
     }
 
-    List<String> styles = [
-      fromColor(color: color, blockquote: blockquote, hyperlink: hyperlink),
-      fromBackgroundColor(backgroundColor: backgroundColor),
-      fromFontWeight(fontWeight: fontWeight),
-      fromFontSize(fontSize: fontSize),
-      fromFontFamily(fontFamily: fontFamily),
-      fromHorizontalSpace(horizontalSpace: horizontalSpace),
-      fromVerticalSpace(verticalSpace: verticalSpace),
-      fromShadow(shadow: shadow),
-      fromItalic(italic: italic),
-      fromStrikeThrough(strikeThrough: strikeThrough),
-      fromUnderline(underline: underline),
-      fromOverline(overline: overline),
-      fromBlockQuote(blockquote: blockquote),
-      fromPadding(padding: padding),
-      fromAlign(align: align),
-      fromHyperlink(hyperlink: hyperlink)
-    ];
-    if (image != null) {
-      return fromImage(image: image);
-    } else if (styles.where((e) => e == "").length == styles.length) {
-      return fromText(text: text);
-    } else {
-      return '<style="${styles.where((e) => e.isNotEmpty).toString().replaceAll(RegExp(r'\(|\)'), "")}">${fromText(text: text)}</style>';
+    String encode(RichTrexSpan value) {
+      List<String> styles = [
+        fromColor(
+            color: value.color,
+            blockquote: value.blockquote,
+            hyperlink: value.hyperlink),
+        fromBackgroundColor(backgroundColor: value.backgroundColor),
+        fromFontWeight(fontWeight: value.fontWeight),
+        fromFontSize(fontSize: value.fontSize),
+        fromFontFamily(fontFamily: value.fontFamily),
+        fromHorizontalSpace(horizontalSpace: value.horizontalSpace),
+        fromVerticalSpace(verticalSpace: value.verticalSpace),
+        fromShadow(shadow: value.shadow),
+        fromItalic(italic: value.italic),
+        fromStrikeThrough(strikeThrough: value.strikeThrough),
+        fromUnderline(underline: value.underline),
+        fromOverline(overline: value.overline),
+        fromBlockQuote(blockquote: value.blockquote),
+        fromPadding(padding: value.padding),
+        fromAlign(align: value.align),
+        fromHyperlink(hyperlink: value.hyperlink)
+      ];
+      if (value.image != null) {
+        return fromImage(image: value.image);
+      } else if (styles.where((e) => e == "").length == styles.length) {
+        return fromText(text: value.text);
+      } else {
+        return '<style="${styles.where((e) => e.isNotEmpty).toString().replaceAll(RegExp(r'\(|\)'), "")}">${fromText(text: value.text)}</style>';
+      }
     }
+
+    return span.map((e) => encode(e)).join('\n');
   }
 
-  static RichTrexSpan decode(String text) {
+  static List<RichTrexSpan> decode(String text) {
     List<String> toTextlist(String text) => text
         .replaceAll("\n", "<br>")
         .split(RegExp(
             r'(?=<style=")|(?<=<\/style>)|(?=<br>)|(?<=<br>)|(?=<widget)|(?<="\/>)'))
         .where((e) => e != " ")
         .toList();
-
     String toText(String text) => text.replaceAll(
         RegExp(r'<style=".*?;">|<\/style>|<br>|<widget=".*?;"\/>'), "");
-
     Color? toColor(String text) {
       try {
         String? linked = text.matchWith(r'(?<=hyperlink:).*?(?=;)');
@@ -381,7 +386,6 @@ class RichTrexSpan extends InlineSpan {
             text.matchWith(r'(?<=shadow-vertical:).*?(?=;)') ?? "0";
         String horizontal =
             text.matchWith(r'(?<=shadow-horizontal:).*?(?=;)') ?? "0";
-
         return Shadow(
             color: Color(int.parse(color)),
             blurRadius: double.parse(blur),
@@ -451,6 +455,10 @@ class RichTrexSpan extends InlineSpan {
       return text.matchWith(r'(?<=hyperlink:).*?(?=;)');
     }
 
+    bool toBreakline(String text) {
+      return text.contains(RegExp("\n|<br>"));
+    }
+
     RichTrexImage? toImage(String text) {
       if (text.contains(RegExp(r'<widget=".*?/>'))) {
         try {
@@ -461,14 +469,11 @@ class RichTrexSpan extends InlineSpan {
           String? resize = text.matchWith('(?<=image-resize:).*?(?=;)');
           String? height = text.matchWith('(?<=image-height:).*?(?=;)');
           String? network = text.matchWith('(?<=image-network:).*?(?=;)');
-
           // Parsed [size] from [width] and [height].
           Size size =
               Size(double.parse(width ?? "100"), double.parse(height ?? "100"));
-
           // Check whether user allowed to resize or not.
           bool allowed = resize == null ? true : resize == "true";
-
           if (network != null) {
             return RichTrexImage.network(network, size: size, resize: allowed);
           } else if (memory != null) {
@@ -488,7 +493,43 @@ class RichTrexSpan extends InlineSpan {
       }
     }
 
-    return RichTrexStyle("text");
+    List<String> texts = toTextlist(text);
+
+    return List.generate(toTextlist(text).length, (x) {
+      if (toImage(texts[x]) != null) {
+        return RichTrexWidget.image(image: toImage(texts[x])!);
+      } else {
+        return RichTrexWidget(texts[x]);
+      }
+    }); /*
+    TextSpan decode([TextStyle style = const TextStyle(color: Colors.black)]) {
+      List<String> texts = toTextlist(this);
+      print(texts);
+      return TextSpan(
+          children: List.generate(
+              texts.length,
+              (x) => toImage(texts[x]) != null
+                  ? RichTrexSpan.image(image: toImage(texts[x]))
+                  : RichTrexSpan(
+                      style: style,
+                      text: toText(texts[x]),
+                      align: toAlign(texts[x]),
+                      backgroundColor: toBackgroundColor(texts[x]),
+                      blockquote: toBlockquote(texts[x]),
+                      color: toColor(texts[x]),
+                      fontFamily: toFontFamily(texts[x]),
+                      fontSize: toFontSize(texts[x]),
+                      fontWeight: toFontWeight(texts[x]),
+                      horizontalSpace: toHorizontalSpace(texts[x]),
+                      hyperlink: toHyperlink(texts[x]),
+                      italic: toItalic(texts[x]),
+                      overline: toOverline(texts[x]),
+                      strikeThrough: toStrikeThrough(texts[x]),
+                      underline: toUnderline(texts[x]),
+                      verticalSpace: toVerticalSpace(texts[x]),
+                      padding: toPadding(texts[x]),
+                      shadow: toShadow(texts[x]))));
+    }*/
   }
 
   @override

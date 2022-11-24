@@ -18,7 +18,7 @@ class RichTrexWidget extends RichTrexSpan {
       bool underline = false,
       bool overline = false,
       bool italic = false})
-      : super(const TextSpan(),
+      : super(
             align: align,
             backgroundColor: backgroundColor,
             blockquote: blockquote,
@@ -38,7 +38,7 @@ class RichTrexWidget extends RichTrexSpan {
             verticalSpace: verticalSpace);
 
   const RichTrexWidget.image({required RichTrexImage image})
-      : super(const TextSpan(), image: image);
+      : super(image: image);
 
   @override
   WidgetSpan get child => WidgetSpan(
