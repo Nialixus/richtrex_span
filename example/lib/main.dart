@@ -1,40 +1,34 @@
-import 'dart:developer';
-
+import 'package:example/src/encode_sample.dart';
 import 'package:flutter/material.dart';
-import 'package:richtrex_image/richtrex_image.dart';
-import 'package:richtrex_span/richtrex_span.dart';
-
-/*void main() {
-  runApp(MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "RichTrex: Format",
-      home: Scaffold(
-          body: SafeArea(
-              child: PageView(
-                  children: const [DecodeSample(), EncodeSample()])))));
-}
-*/
 
 void main() {
   runApp(const MaterialApp(
-      title: "Test",
-      home: Scaffold(backgroundColor: Colors.white, body: Test())));
+      debugShowCheckedModeBanner: false,
+      title: "RichTrex: Span",
+      home: MyApp()));
 }
 
-class Test extends StatelessWidget {
-  const Test({Key? key}) : super(key: key);
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+  PageController get controller => PageController();
   @override
   Widget build(BuildContext context) {
-    const List<RichTrexSpan> spans = [
-      RichTrexStyle("text"),
-      RichTrexStyle("asas", color: Colors.red),
-      RichTrexWidget("sasa", align: Alignment.center),
-      RichTrexWidget.image(
-          image: RichTrexImage.network(
-              "https://w7.pngwing.com/pngs/193/507/png-transparent-black-survival-character-concept-art-design-game-video-game-fictional-character-thumbnail.png",
-              size: Size(40, 40)))
-    ];
-    log(RichTrexSpan.encode(spans));
-    return const Center(child: Text.rich(TextSpan(children: spans)));
+    return Scaffold(
+        body: SafeArea(
+            child: Column(children: [
+      Row(children: [
+        for (int x = 0; x < 2; x++)
+          Expanded(
+              child: InkWell(
+                  onTap: () => controller.animateToPage(x,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeIn),
+                  child: Text(["Encoder", "Decoder"][x])))
+      ]),
+      Expanded(
+          child: PageView(
+              controller: controller,
+              children: const [EncodeSample(), Text("data")]))
+    ])));
   }
 }

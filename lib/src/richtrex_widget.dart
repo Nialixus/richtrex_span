@@ -37,8 +37,7 @@ class RichTrexWidget extends RichTrexSpan {
             underline: underline,
             verticalSpace: verticalSpace);
 
-  const RichTrexWidget.image({required RichTrexImage image})
-      : super(image: image);
+  const RichTrexWidget.image(RichTrexImage image) : super(image: image);
 
   @override
   WidgetSpan get child => WidgetSpan(
