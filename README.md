@@ -1,6 +1,6 @@
-# RichTrex: Format
+# RichTrex: Span
 
-An extended package of `RichTrex` package which is used to encode `TextSpan` into `String`, and decode `String` into `TextSpan`.
+An extended package of `RichTrex` package which is used to encode list of `TextSpan` into `String`, and decode `String` into list of `TextSpan`.
 
 ## Preview
 <table>
@@ -10,10 +10,10 @@ An extended package of `RichTrex` package which is used to encode `TextSpan` int
   </tr>
 </table>
 
-## Primary Format
+## Primary Feature
 
 - Font Color ✅
-- Bold ✅
+- Font Weight ✅
 - Font Size ✅
 - Font Family ✅
 - Custom ❌
@@ -22,19 +22,20 @@ An extended package of `RichTrex` package which is used to encode `TextSpan` int
 - Strikethrough ✅
 - Background Color ✅
 - Image ✅
-- Align ✅
+- Alignment ✅
 - Ordered List ❌
 - Unordered List ❌
 - Block Quote ✅
-- Link ✅
+- Hyperlink ✅
 
-## Secondary Format
+## Secondary Feature
 
 - Superscript ❌
 - Subscript ❌
 - Shadow ✅
-- Height ✅
-- Space ✅
+- Vertical Space ✅
+- Horizontal Space ✅
 - Overline ✅
+- Padding ✅
 - Table ❌
 - Video ❌

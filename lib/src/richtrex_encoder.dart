@@ -4,10 +4,15 @@ import 'package:richtrex_span/richtrex_span.dart';
 
 export 'richtrex_encoder.dart' hide RichTrexEncoder;
 
+/// The tool to encode [RichTrexSpan] into [String].
 class RichTrexEncoder {
+  /// Encoding single value of [RichTrexSpan] into [String].
   const RichTrexEncoder(this.value);
+
+  /// The needed [RichTrexEncoder] value to be translated into [String].
   final RichTrexSpan value;
 
+  /// Encoding all kind of types in [value] into [String].
   String get parse {
     List<String> styles = [
       parseColor(
@@ -39,6 +44,7 @@ class RichTrexEncoder {
     }
   }
 
+  /// Encoding [RichTrexSpan.text] into [String].
   static String parseText({String? text}) {
     try {
       return text!;
@@ -47,6 +53,7 @@ class RichTrexEncoder {
     }
   }
 
+  /// Encoding [RichTrexSpan.color] into [String].
   static String parseColor(
       {Color? color, bool blockquote = false, String? hyperlink}) {
     try {
@@ -64,6 +71,7 @@ class RichTrexEncoder {
     }
   }
 
+  /// Encoding [RichTrexSpan.backgroundColor] into [String].
   static String parseBackgroundColor({Color? backgroundColor}) {
     try {
       return "background-color:0x${backgroundColor!.value.toRadixString(16).toUpperCase()};";
@@ -72,6 +80,7 @@ class RichTrexEncoder {
     }
   }
 
+  /// Encoding [RichTrexSpan.fontWeight] into [String].
   static String parseFontWeight({FontWeight? fontWeight}) {
     try {
       return "font-weight:${fontWeight!.index};";
@@ -80,6 +89,7 @@ class RichTrexEncoder {
     }
   }
 
+  /// Encoding [RichTrexSpan.fontSize] into [String].
   static String parseFontSize({double? fontSize}) {
     try {
       return "font-size:${fontSize!};";
@@ -88,6 +98,7 @@ class RichTrexEncoder {
     }
   }
 
+  /// Encoding [RichTrexSpan.fontFamily] into [String].
   static String parseFontFamily({String? fontFamily}) {
     try {
       return "font-family:${fontFamily!};";
@@ -96,6 +107,7 @@ class RichTrexEncoder {
     }
   }
 
+  /// Encoding [RichTrexSpan.horizontalSpace] into [String].
   static String parseHorizontalSpace({double? horizontalSpace}) {
     try {
       return "horizontal-space:${horizontalSpace!};";
@@ -104,6 +116,7 @@ class RichTrexEncoder {
     }
   }
 
+  /// Encoding [RichTrexSpan.verticalSpace] into [String].
   static String parseVerticalSpace({double? verticalSpace}) {
     try {
       return "vertical-space:${verticalSpace!};";
@@ -112,6 +125,7 @@ class RichTrexEncoder {
     }
   }
 
+  /// Encoding [RichTrexSpan.shadow] into [String].
   static String parseShadow({Shadow? shadow}) {
     try {
       String color = shadow != null
@@ -128,6 +142,7 @@ class RichTrexEncoder {
     }
   }
 
+  /// Encoding [RichTrexSpan.italic] into [String].
   static String parseItalic({bool italic = false}) {
     if (italic) {
       return "decoration:italic;";
@@ -136,6 +151,7 @@ class RichTrexEncoder {
     }
   }
 
+  /// Encoding [RichTrexSpan.strikeThrough] into [String].
   static String parseStrikeThrough({bool strikeThrough = false}) {
     if (strikeThrough) {
       return "decoration:strikethrough;";
@@ -144,6 +160,7 @@ class RichTrexEncoder {
     }
   }
 
+  /// Encoding [RichTrexSpan.underline] into [String].
   static String parseUnderline({bool underline = false}) {
     if (underline) {
       return "decoration:underline;";
@@ -152,6 +169,7 @@ class RichTrexEncoder {
     }
   }
 
+  /// Encoding [RichTrexSpan.overline] into [String].
   static String parseOverline({bool overline = false}) {
     if (overline) {
       return "decoration:overline;";
@@ -160,6 +178,7 @@ class RichTrexEncoder {
     }
   }
 
+  /// Encoding [RichTrexSpan.blockquote] into [String].
   static String parseBlockQuote({bool blockquote = false}) {
     if (blockquote) {
       return "decoration:blockquote;";
@@ -168,6 +187,7 @@ class RichTrexEncoder {
     }
   }
 
+  /// Encoding [RichTrexSpan.padding] into [String].
   static String parsePadding({EdgeInsetsGeometry? padding}) {
     try {
       if (padding != null) {
@@ -185,6 +205,7 @@ class RichTrexEncoder {
     }
   }
 
+  /// Encoding [RichTrexSpan.align] into [String].
   static String parseAlign({AlignmentGeometry? align}) {
     try {
       if (align != null) {
@@ -221,6 +242,7 @@ class RichTrexEncoder {
     }
   }
 
+  /// Encoding [RichTrexSpan.image] into [String].
   static String parseImage({RichTrexImage? image}) {
     try {
       String type() {
@@ -244,6 +266,7 @@ class RichTrexEncoder {
     }
   }
 
+  /// Encoding [RichTrexSpan.hyperlink] into [String].
   static String parseHyperlink({String? hyperlink}) {
     try {
       return "hyperlink:${hyperlink!};";

@@ -28,7 +28,7 @@ This is an Example of using RichTrexFormat. Key features of this package is :
 <style="decoration:blockquote;">11. BlockQuote Decoration</style>
 <style="background-color:0xFF2196F3;">12. Background Color</style>
 <style="shadow-color:0xFFF44336;shadow-blur:10.0;shadow-vertical:-1.0;shadow-horizontal:-1.0;">13. Shadow</style>
-14. Resizable Image<widget="image-network:https://static.remove.bg/sample-gallery/graphics/bird-thumbnail.jpg;image-width:30.0;image-height:30.0;"/>
+14. Resizable Image<widget="image-network:https://avatars.githubusercontent.com/u/45191605?v=4;image-width:70.0;image-height:70.0;"/>
 <style="align-x:0.0;align-y:0.0;">15. Alignment</style>
 <style="hyperlink:https://github.com/Nialixus;">16. Hyperlink</style>
 <style="padding-left:20.0;padding-top: 20.0;padding-right: 20.0;padding-bottom: 20.0;">17. Padding</style>""";

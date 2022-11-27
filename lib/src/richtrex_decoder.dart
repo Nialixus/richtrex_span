@@ -5,18 +5,21 @@ import 'package:richtrex_span/src/regex_matcher.dart';
 
 export 'richtrex_decoder.dart' hide RichTrexDecoder;
 
+/// The tool to decode [String] into [RichTrexSpan].
 class RichTrexDecoder {
+  /// Decoding single value of [String] into [RichTrexSpan].
   const RichTrexDecoder(this.value);
+
+  /// The needed [String] value to be translated into [RichTrexSpan].
   final String value;
 
+  /// Decoding all kind of types from [value] into [RichTrexSpan].
   RichTrexSpan get parse {
     if (parseImage(value) != null) {
-      return RichTrexWidget.image(parseImage(value)!);
-    } else if (parseAlign(value) != null ||
-        parseBlockquote(value) == true ||
-        parseHyperlink(value) != null ||
-        parsePadding(value) != null && parsePadding(value) != EdgeInsets.zero) {
-      return RichTrexWidget(parseText(value),
+      return RichTrexSpan.image(image: parseImage(value)!);
+    } else {
+      return RichTrexSpan(
+          text: parseText(value),
           align: parseAlign(value),
           backgroundColor: parseBackgroundColor(value),
           blockquote: parseBlockquote(value),
@@ -33,26 +36,14 @@ class RichTrexDecoder {
           strikeThrough: parseStrikeThrough(value),
           underline: parseUnderline(value),
           verticalSpace: parseVerticalSpace(value));
-    } else {
-      return RichTrexStyle(parseText(value),
-          backgroundColor: parseBackgroundColor(value),
-          color: parseColor(value),
-          fontFamily: parseFontFamily(value),
-          fontSize: parseFontSize(value),
-          fontWeight: parseFontWeight(value),
-          horizontalSpace: parseHorizontalSpace(value),
-          italic: parseItalic(value),
-          overline: parseOverline(value),
-          shadow: parseShadow(value),
-          strikeThrough: parseStrikeThrough(value),
-          underline: parseUnderline(value),
-          verticalSpace: parseVerticalSpace(value));
     }
   }
 
+  /// Decoding [String] into [RichTrexSpan.text].
   static String parseText(String value) => value.replaceAll(
       RegExp(r'<style=".*?;">|<\/style>|<widget=".*?;"\/>'), "");
 
+  /// Decoding [String] into [RichTrexSpan.color].
   static Color? parseColor(String value) {
     try {
       String? linked = value.matchWith(r'(?<=hyperlink:).*?(?=;)');
@@ -70,6 +61,7 @@ class RichTrexDecoder {
     }
   }
 
+  /// Decoding [String] into [RichTrexSpan.backgroundColor].
   static Color? parseBackgroundColor(String value) {
     try {
       String text = value.matchWith(r'(?<=background-color:).*?(?=;)')!;
@@ -79,6 +71,7 @@ class RichTrexDecoder {
     }
   }
 
+  /// Decoding [String] into [RichTrexSpan.fontWeight].
   static FontWeight? parseFontWeight(String value) {
     try {
       String text = value.matchWith(r'(?<=font-weight:).*?(?=;)')!;
@@ -88,6 +81,7 @@ class RichTrexDecoder {
     }
   }
 
+  /// Decoding [String] into [RichTrexSpan.fontSize].
   static double? parseFontSize(String value) {
     try {
       String text = value.matchWith(r'(?<=font-size:).*?(?=;)')!;
@@ -97,6 +91,7 @@ class RichTrexDecoder {
     }
   }
 
+  /// Decoding [String] into [RichTrexSpan.fontFamily].
   static String? parseFontFamily(String value) {
     try {
       String text = value.matchWith(r'(?<=font-family:).*?(?=;)')!;
@@ -106,6 +101,7 @@ class RichTrexDecoder {
     }
   }
 
+  /// Decoding [String] into [RichTrexSpan.horizontalSpace].
   static double? parseHorizontalSpace(String value) {
     try {
       String text = value.matchWith(r'(?<=horizontal-space:).*?(?=;)')!;
@@ -115,6 +111,7 @@ class RichTrexDecoder {
     }
   }
 
+  /// Decoding [String] into [RichTrexSpan.verticalSpace].
   static double? parseVerticalSpace(String value) {
     try {
       String text = value.matchWith(r'(?<=vertical-space:).*?(?=;)')!;
@@ -124,6 +121,7 @@ class RichTrexDecoder {
     }
   }
 
+  /// Decoding [String] into [RichTrexSpan.shadow].
   static Shadow? parseShadow(String value) {
     try {
       String color = value.matchWith(r'(?<=shadow-color:).*?(?=;)')!;
@@ -141,26 +139,32 @@ class RichTrexDecoder {
     }
   }
 
+  /// Decoding [String] into [RichTrexSpan.italic].
   static bool parseItalic(String value) {
     return value.contains('decoration:italic;');
   }
 
+  /// Decoding [String] into [RichTrexSpan.strikeThrough].
   static bool parseStrikeThrough(String value) {
     return value.contains('decoration:strikethrough;');
   }
 
+  /// Decoding [String] into [RichTrexSpan.underline].
   static bool parseUnderline(String value) {
     return value.contains('decoration:underline;');
   }
 
+  /// Decoding [String] into [RichTrexSpan.overline].
   static bool parseOverline(String value) {
     return value.contains('decoration:overline;');
   }
 
+  /// Decoding [String] into [RichTrexSpan.blockquote].
   static bool parseBlockquote(String value) {
     return value.contains('decoration:blockquote;');
   }
 
+  /// Decoding [String] into [RichTrexSpan.padding].
   static EdgeInsetsGeometry? parsePadding(String value) {
     try {
       bool quoted = value.contains('decoration:blockquote;');
@@ -182,6 +186,7 @@ class RichTrexDecoder {
     }
   }
 
+  /// Decoding [String] into [RichTrexSpan.align].
   static Alignment? parseAlign(String value) {
     try {
       String? x = value.matchWith(r'(?<=align-x:).*?(?=;)');
@@ -197,14 +202,12 @@ class RichTrexDecoder {
     }
   }
 
+  /// Decoding [String] into [RichTrexSpan.hyperlink].
   static String? parseHyperlink(String value) {
     return value.matchWith(r'(?<=hyperlink:).*?(?=;)');
   }
 
-  static bool parseBreakline(String value) {
-    return value.contains(RegExp("\n|<br>"));
-  }
-
+  /// Decoding [String] into [RichTrexSpan.image].
   static RichTrexImage? parseImage(String value) {
     if (value.contains(RegExp(r'<widget=".*?/>'))) {
       try {
