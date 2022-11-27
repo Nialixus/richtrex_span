@@ -15,7 +15,7 @@ class RichTrexDecoder {
     } else if (parseAlign(value) != null ||
         parseBlockquote(value) == true ||
         parseHyperlink(value) != null ||
-        parsePadding(value) != null) {
+        parsePadding(value) != null && parsePadding(value) != EdgeInsets.zero) {
       return RichTrexWidget(parseText(value),
           align: parseAlign(value),
           backgroundColor: parseBackgroundColor(value),
@@ -182,7 +182,7 @@ class RichTrexDecoder {
     }
   }
 
-  static AlignmentGeometry? parseAlign(String value) {
+  static Alignment? parseAlign(String value) {
     try {
       String? x = value.matchWith(r'(?<=align-x:).*?(?=;)');
       String? y = value.matchWith(r'(?<=align-y:).*?(?=;)');

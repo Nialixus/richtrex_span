@@ -171,11 +171,11 @@ class RichTrexEncoder {
   static String parsePadding({EdgeInsetsGeometry? padding}) {
     try {
       if (padding != null) {
-        List<String> edges = (padding
+        List<String> edges = padding
             .add(const EdgeInsets.only(left: 1.3))
             .toString()
-            .replaceAll(RegExp(r"EdgeInsets\(|\)"), "")
-            .split(RegExp(r"(?<=\..)")));
+            .replaceAll(RegExp(r'EdgeInsets\(|\)'), "")
+            .split(",");
         return "padding-left:${double.parse(edges[0]) - 1.3};padding-top:${edges[1]};padding-right:${edges[2]};padding-bottom:${edges[3]};";
       } else {
         return "";

@@ -8,7 +8,7 @@ class RichTrexWidget extends RichTrexSpan {
       double? horizontalSpace,
       bool blockquote = false,
       EdgeInsetsGeometry? padding,
-      AlignmentGeometry? align,
+      Alignment? align,
       Color? backgroundColor,
       String? hyperlink,
       Shadow? shadow,
@@ -44,14 +44,14 @@ class RichTrexWidget extends RichTrexSpan {
       child: image != null
           ? image!
           : Container(
-              decoration: blockquote == true
+              decoration: blockquote
                   ? BoxDecoration(
                       color: Colors.grey.shade200,
                       border: const Border(
                           left: BorderSide(width: 4, color: Colors.grey)))
                   : null,
-              padding: blockquote == true ? const EdgeInsets.all(4.0) : padding,
-              constraints: blockquote == true
+              padding: blockquote ? const EdgeInsets.all(4.0) : padding,
+              constraints: blockquote
                   ? const BoxConstraints(minWidth: double.infinity)
                   : null,
               alignment: align,
@@ -64,7 +64,12 @@ class RichTrexWidget extends RichTrexSpan {
                           highlightColor: Colors.blue.withOpacity(0.1),
                           onTap: onTap,
                           child: Text(text ?? "",
-                              style: style?.copyWith(
+                              textAlign: align?.x == 0
+                                  ? TextAlign.center
+                                  : align?.x == 1
+                                      ? TextAlign.end
+                                      : TextAlign.start,
+                              style: TextStyle(
                                   leadingDistribution:
                                       TextLeadingDistribution.even,
                                   backgroundColor: backgroundColor,
@@ -90,4 +95,31 @@ class RichTrexWidget extends RichTrexSpan {
                                     if (overline == true)
                                       TextDecoration.overline
                                   ]))))))));
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    if (image != null) {
+      return "RichTrexWidget.image(image: $image)";
+    }
+    return "RichTrexWidget(${{
+      if (align != null) "align": align,
+      if (backgroundColor != null) "backgroundColor": backgroundColor,
+      if (blockquote) "blockquote": blockquote,
+      if (color != null) "color": color,
+      if (fontFamily != null) "fontFamily": fontFamily,
+      if (fontSize != null) "fontSize": fontSize,
+      if (fontWeight != null) "fontWeight": fontWeight,
+      if (horizontalSpace != null) "horizontalSpace": horizontalSpace,
+      if (hyperlink != null) "hyperlink": hyperlink,
+      if (italic) "italic": italic,
+      if (overline) "overline": overline,
+      if (padding != null && padding != EdgeInsets.zero) "padding": padding,
+      if (shadow != null) "shadow": shadow,
+      if (strikeThrough) "strikeThrough": strikeThrough,
+      if (text != null) "text": text,
+      if (underline) "underline": underline,
+      if (verticalSpace != null) "verticalSpace": verticalSpace
+    }})"
+        .replaceAll(RegExp(r'\{|\}'), "");
+  }
 }

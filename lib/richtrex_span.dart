@@ -41,7 +41,7 @@ class RichTrexSpan extends InlineSpan {
   final RichTrexImage? image;
   final bool blockquote;
   final EdgeInsetsGeometry? padding;
-  final AlignmentGeometry? align;
+  final Alignment? align;
   final Color? backgroundColor;
   final String? hyperlink;
   final String? text;
@@ -54,7 +54,7 @@ class RichTrexSpan extends InlineSpan {
   final bool italic;
 
   static String encode(List<RichTrexSpan> span) =>
-      span.map((e) => RichTrexEncoder(e).parse).join("\n");
+      span.map((e) => RichTrexEncoder(e).parse).join();
 
   static List<RichTrexSpan> decode(String text) {
     List<String> list = text

@@ -5,11 +5,13 @@ class DebugConsole extends StatelessWidget {
       {Key? key,
       required this.controller,
       required this.label,
+      this.onChanged,
       this.editable = false})
       : super(key: key);
   final String label;
   final TextEditingController controller;
   final bool editable;
+  final void Function(String text)? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -39,30 +41,22 @@ class DebugConsole extends StatelessWidget {
               ])),
           Expanded(
               child: Scrollbar(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: SingleChildScrollView(
-                physics: editable
-                    ? const NeverScrollableScrollPhysics()
-                    : const BouncingScrollPhysics(),
-                child: TextField(
-                    maxLines: null,
-                    autofocus: true,
-                    enabled: editable,
-                    controller: controller,
-                    scrollPhysics: editable
-                        ? const BouncingScrollPhysics()
-                        : const NeverScrollableScrollPhysics(),
-                    style: const TextStyle(
-                        fontSize: 12.0,
-                        height: 1.5,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xff2D77D3)),
-                    decoration: const InputDecoration(
-                        isDense: true, border: InputBorder.none)),
-              ),
-            ),
-          ))
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          child: TextField(
+                              maxLines: null,
+                              autofocus: true,
+                              enabled: editable,
+                              controller: controller,
+                              style: const TextStyle(
+                                  fontSize: 12.0,
+                                  height: 1.5,
+                                  fontWeight: FontWeight.w400,
+                                  color: Color(0xff2D77D3)),
+                              decoration: const InputDecoration(
+                                  isDense: true, border: InputBorder.none))))))
         ]));
   }
 }

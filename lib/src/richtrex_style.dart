@@ -34,6 +34,7 @@ class RichTrexStyle extends RichTrexSpan {
       text: text,
       style: TextStyle(
           color: color,
+          leadingDistribution: TextLeadingDistribution.even,
           height: verticalSpace,
           letterSpacing: horizontalSpace,
           shadows: [if (shadow != null) shadow!],
@@ -47,4 +48,24 @@ class RichTrexStyle extends RichTrexSpan {
             if (overline) TextDecoration.overline,
             if (underline) TextDecoration.underline
           ])));
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return "RichTrexStyle(${{
+      if (backgroundColor != null) "backgroundColor": backgroundColor,
+      if (color != null) "color": color,
+      if (fontFamily != null) "fontFamily": fontFamily,
+      if (fontSize != null) "fontSize": fontSize,
+      if (fontWeight != null) "fontWeight": fontWeight,
+      if (horizontalSpace != null) "horizontalSpace": horizontalSpace,
+      if (italic) "italic": italic,
+      if (overline) "overline": overline,
+      if (shadow != null) "shadow": shadow,
+      if (strikeThrough) "strikeThrough": strikeThrough,
+      if (text != null) "text": text,
+      if (underline) "underline": underline,
+      if (verticalSpace != null) "verticalSpace": verticalSpace
+    }})"
+        .replaceAll(RegExp(r'\{|\}'), "");
+  }
 }
