@@ -1,3 +1,7 @@
 ## 1.0.0
 
-* TInitial Release, Add Documentation, Add License
+* Initial Release, Add Documentation, Add License
+
+## 1.1.0
+
+* Update License, Readme, Fix Hyperlink.
