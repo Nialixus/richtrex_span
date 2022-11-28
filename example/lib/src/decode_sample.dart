@@ -13,7 +13,6 @@ class DecodeSample extends StatefulWidget {
 class _DecodeSampleState extends State<DecodeSample> {
   String text =
       """<style="font-weight:6;font-size:25.0;align-x:0.0;align-y:0.0;">RichTrex: Format</style>
-
 This is an Example of using RichTrexFormat. Key features of this package is :
 <style="font-weight:6;">1. Font Weight</style>
 <style="font-color:0xFFF44336;">2. Font Color</style>

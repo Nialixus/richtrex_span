@@ -29,7 +29,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  richtrex_image: ^1.1.0
   richtrex_span:
     path: ../
 

@@ -21,13 +21,12 @@ class DebugHeader extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8.0, vertical: 4.0),
                         child: Row(children: [
-                          const Icon(Icons.telegram,
-                              color: Colors.blue, size: 18.0),
+                          const Icon(Icons.telegram, color: Colors.blue),
                           const SizedBox(width: 8.0),
                           Expanded(
                               child: Text(["Encoder", "Decoder"][x],
                                   style: const TextStyle(
-                                      color: Colors.white, fontSize: 12.0))),
+                                      color: Colors.white, fontSize: 14.0))),
                           if (active(x))
                             const Icon(Icons.clear,
                                 color: Colors.white, size: 12.0)
