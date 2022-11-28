@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:richtrex_image/richtrex_image.dart';
 import 'package:richtrex_span/src/richtrex_decoder.dart';
 import 'package:richtrex_span/src/richtrex_encoder.dart';
-import 'package:url_launcher/link.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// A superclass to translate [TextSpan] or [WidgetSpan] into [String] and the other way round.
 class RichTrexSpan extends InlineSpan {
@@ -64,6 +64,9 @@ class RichTrexSpan extends InlineSpan {
         padding != null && padding != EdgeInsets.zero ||
         hyperlink != null) {
       return WidgetSpan(
+          baseline: TextBaseline.alphabetic,
+          alignment: PlaceholderAlignment.baseline,
+          style: style,
           child: image != null
               ? image!
               : Container(
@@ -78,46 +81,53 @@ class RichTrexSpan extends InlineSpan {
                       ? const BoxConstraints(minWidth: double.infinity)
                       : null,
                   alignment: align,
-                  child: Link(
-                      uri: hyperlink == null ? null : Uri.parse(hyperlink!),
-                      builder: (_, onTap) => Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                              splashColor: Colors.blue.withOpacity(0.1),
-                              highlightColor: Colors.blue.withOpacity(0.1),
-                              onTap: onTap,
-                              child: Text(text ?? "",
-                                  textAlign: align?.x == 0
-                                      ? TextAlign.center
-                                      : align?.x == 1
-                                          ? TextAlign.end
-                                          : TextAlign.start,
-                                  style: TextStyle(
-                                      leadingDistribution:
-                                          TextLeadingDistribution.even,
-                                      backgroundColor: backgroundColor,
-                                      fontStyle: italic == true
-                                          ? FontStyle.italic
-                                          : FontStyle.normal,
-                                      shadows: [if (shadow != null) shadow!],
-                                      height: verticalSpace,
-                                      letterSpacing: horizontalSpace,
-                                      color: blockquote == true
-                                          ? Colors.black.withOpacity(0.5)
-                                          : hyperlink != null
-                                              ? Colors.blue
-                                              : color,
-                                      fontSize: fontSize,
-                                      fontFamily: fontFamily,
-                                      fontWeight: fontWeight,
-                                      decoration: TextDecoration.combine([
-                                        if (strikeThrough == true)
-                                          TextDecoration.lineThrough,
-                                        if (underline == true)
-                                          TextDecoration.underline,
-                                        if (overline == true)
-                                          TextDecoration.overline
-                                      ]))))))));
+                  child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                          splashColor: Colors.blue.withOpacity(0.1),
+                          highlightColor: Colors.blue.withOpacity(0.1),
+                          onTap: () async {
+                            if (hyperlink != null) {
+                              try {
+                                await launchUrl(Uri.parse(hyperlink!));
+                              } catch (e) {
+                                /* do nothing */
+                              }
+                            }
+                          },
+                          child: Text(text ?? "",
+                              textAlign: align?.x == 0
+                                  ? TextAlign.center
+                                  : align?.x == 1
+                                      ? TextAlign.end
+                                      : TextAlign.start,
+                              textScaleFactor: 1.0,
+                              style: TextStyle(
+                                  leadingDistribution:
+                                      TextLeadingDistribution.even,
+                                  backgroundColor: backgroundColor,
+                                  fontStyle: italic == true
+                                      ? FontStyle.italic
+                                      : FontStyle.normal,
+                                  shadows: [if (shadow != null) shadow!],
+                                  height: verticalSpace,
+                                  letterSpacing: horizontalSpace,
+                                  color: blockquote == true
+                                      ? Colors.black.withOpacity(0.5)
+                                      : hyperlink != null
+                                          ? Colors.blue
+                                          : color,
+                                  fontSize: fontSize,
+                                  fontFamily: fontFamily,
+                                  fontWeight: fontWeight,
+                                  decoration: TextDecoration.combine([
+                                    if (strikeThrough == true)
+                                      TextDecoration.lineThrough,
+                                    if (underline == true)
+                                      TextDecoration.underline,
+                                    if (overline == true)
+                                      TextDecoration.overline
+                                  ])))))));
     } else {
       return TextSpan(
           text: text,

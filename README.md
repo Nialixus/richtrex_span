@@ -1,5 +1,6 @@
 # RichTrex: Span
-
+<a href='https://pub.dev/packages/richtrex_span'><img src='https://img.shields.io/pub/v/richtrex_span.svg?logo=flutter&color=blue&style=flat-square'/></a>\
+\
 An extended package of `RichTrex` package which is used to encode list of `TextSpan` into `String`, and decode `String` into list of `TextSpan`.
 
 ## Preview
@@ -39,3 +40,55 @@ An extended package of `RichTrex` package which is used to encode list of `TextS
 - Padding ✅
 - Table ❌
 - Video ❌
+
+
+## Install
+
+Add this line to your pubspec.yaml.
+
+```yaml
+dependencies:
+  richtrex_span: ^1.1.0
+```
+
+## Usage
+
+First, import the RichTrex: Span package.
+
+```dart
+import 'package:richtrex_span/richtrex_span.dart';
+```
+
+And to encode, you need to set a list of `RichTrexSpan` just like this.
+
+```dart
+const List<RichTrexSpan> span = [
+    RichTrexSpan(
+        text: "RichTrex: Format",
+        fontWeight: FontWeight.bold,
+        fontSize: 25,
+        align: Alignment.center),
+    RichTrexSpan(
+        text: "\n This is an Example of using RichTrexFormat.")
+  ];
+
+  String result = RichTrex.encode(span);
+```
+
+or if you want to decode list of `RichTrexSpan` from `String` you can use this.
+
+```dart
+String text =  """<style="font-weight:6;font-size:25.0;align-x:0.0;align-y:0.0;">RichTrex: Format</style>
+This is an Example of using RichTrexFormat.""";
+
+List<RichTrexSpan> result = RichTrex.decode(text);
+```
+
+and implement the decoded result into `Text.rich` just like this.
+
+```dart
+return Text.rich(
+          TextSpan(children: RichTrexSpan.decode(text)),
+          key: UniqueKey(),
+        );
+```

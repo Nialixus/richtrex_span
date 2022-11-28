@@ -1,6 +1,6 @@
 name: richtrex_span
 description: An extended package of RichTrex package which is used to encode list of TextSpan into String, and decode String into list of TextSpan.
-version: 1.0.0
+version: 1.1.0
 homepage: https://github.com/Nialixus/richtrex_span
 
 environment:
@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   richtrex_image: ^1.2.0
-  url_launcher: ^6.0.9
+  url_launcher: ^6.1.7
 
 dev_dependencies:
   flutter_test:
